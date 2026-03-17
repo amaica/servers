@@ -1,0 +1,749 @@
+{
+  "name": "GSAN_ATENDIMENTO_COMPLETO",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "gsan-atendimento",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2240,
+        1568
+      ],
+      "id": "c37dc3f5-dde4-4f26-8fd2-5adefb9c59e6",
+      "name": "Webhook",
+      "webhookId": "gsan-atendimento"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "mensagem",
+              "value": "={{ $json.body?.data?.message?.conversation || $json.body?.data?.message?.extendedTextMessage?.text || $json.data?.message?.conversation || $json.data?.message?.extendedTextMessage?.text || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "a2",
+              "name": "remoteJid",
+              "value": "={{ $json.body?.data?.key?.remoteJid || $json.data?.key?.remoteJid }}",
+              "type": "string"
+            },
+            {
+              "id": "a3",
+              "name": "fromMe",
+              "value": "={{ $json.body?.data?.key?.fromMe ?? $json.data?.key?.fromMe ?? false }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2032,
+        1568
+      ],
+      "id": "557da175-9edd-4e2a-ab4f-0e3710ff44d3",
+      "name": "Extrair Dados"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.fromMe }}",
+              "value2": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1872,
+        1408
+      ],
+      "id": "56e5fed5-c07c-479b-b943-e6f8b656b989",
+      "name": "Ignorar FromMe"
+    },
+    {
+      "parameters": {
+        "jsCode": "const staticData = $getWorkflowStaticData('global');\nconst items = $input.all();\nreturn items.map(item => {\n  const key = item.json.remoteJid;\n  const session = staticData[key] || {};\n  return { json: { ...item.json, ...session } };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1632,
+        1568
+      ],
+      "id": "0f3bd60b-2419-408b-bbb7-0b28d3ed93ee",
+      "name": "Buscar Sessao"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.estado }}",
+              "operation": "isEmpty"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1440,
+        1568
+      ],
+      "id": "917087ae-14de-475f-bfe7-e3a091678061",
+      "name": "Sessao Nova?"
+    },
+    {
+      "parameters": {
+        "jsCode": "const staticData = $getWorkflowStaticData('global');\nconst items = $input.all();\nreturn items.map(item => {\n  const key = item.json.remoteJid;\n  staticData[key] = { estado: 'AGUARDANDO_CPF' };\n  return { json: { ...item.json, estado: 'AGUARDANDO_CPF' } };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1232,
+        1424
+      ],
+      "id": "1faf4919-72bc-4804-b164-11617ece7a43",
+      "name": "Criar Sessao"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "18281270000183",
+        "remoteJid": "5554991952748",
+        "messageText": "Bem-vindo ao GSAN.\n\nInforme seu CPF ou CNPJ:",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -1040,
+        1424
+      ],
+      "id": "b48a7ef6-2972-41b0-b864-f35bb14835d9",
+      "name": "Solicitar CPF",
+      "credentials": {
+        "evolutionApi": {
+          "id": "pVr6DaM4lS7bbnuq",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=http://logprosistemas.ddns.net:9078/gsan/rest/buscarImoveis?cpfCnpj={{ ($json.mensagem || '').toString().replace(/\\D/g, '') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -1168,
+        1776
+      ],
+      "id": "8e4180a5-b76a-4e98-9f5b-b46c30eff287",
+      "name": "Buscar Imoveis"
+    },
+    {
+      "parameters": {
+        "jsCode": "const staticData = $getWorkflowStaticData('global');\nconst items = $input.all();\nconst prevItems = $('Switch Menu').all();\nconst switchData = prevItems[0]?.json || {};\nreturn items.map(item => {\n  const resp = item.json;\n  const arr = Array.isArray(resp) ? resp : (resp.data ? [resp.data].flat() : [resp]);\n  const first = arr[0];\n  const imovel = first?.imovel ?? first?.[0]?.imovel ?? '';\n  const key = switchData.remoteJid;\n  const mensagem = switchData.mensagem || '';\n  const cpfCnpj = String(mensagem).replace(/\\D/g, '');\n  if (key) staticData[key] = { estado: 'MENU', cpfCnpj, imovel };\n  return { json: { ...switchData, estado: 'MENU', cpfCnpj, imovel } };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1120,
+        1968
+      ],
+      "id": "99bcc806-cb3e-4ccd-81cc-a17f4f7ef603",
+      "name": "Salvar Sessao"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "18281270000183",
+        "remoteJid": "=5554991952748",
+        "messageText": "Menu GSAN:\n\n1 Histórico Consumo\n2 Próximo Vencimento\n3 Próxima Leitura\n4 Segunda Via Simples\n5 Segunda Via Total\n6 Código de Barras\n7 Relatório PDF Conta\n8 Débitos PDF\n9 Localidade\n0 Reiniciar",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        2000
+      ],
+      "id": "267288dd-5b93-493d-8f33-0a640632d031",
+      "name": "Enviar Menu",
+      "credentials": {
+        "evolutionApi": {
+          "id": "pVr6DaM4lS7bbnuq",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "r1",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "r2",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "r3",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "3",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "r4",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "4",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "r5",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "5",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "r6",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "6",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "r7",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "7",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "r8",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "8",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "r9",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "9",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "r0",
+                    "leftValue": "={{ $json.mensagem }}",
+                    "rightValue": "0",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -640,
+        1776
+      ],
+      "id": "0445505b-7da7-483b-bb98-dc6b42f5d230",
+      "name": "Switch Menu"
+    },
+    {
+      "parameters": {
+        "url": "=http://logprosistemas.ddns.net:9078/gsan/rest/consultaConsumo?imovel={{ $json.imovel }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -496,
+        1232
+      ],
+      "id": "70f2bee2-02b5-403d-b94d-e52ec96b3d4f",
+      "name": "Histórico Consumo"
+    },
+    {
+      "parameters": {
+        "url": "=http://logprosistemas.ddns.net:9078/gsan/rest/consultaVencimento?imovel={{ $json.imovel }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -448,
+        1360
+      ],
+      "id": "d0dd8df2-429d-4e68-a0fe-2d81330e74b1",
+      "name": "Próximo Vencimento"
+    },
+    {
+      "parameters": {
+        "url": "=http://logprosistemas.ddns.net:9078/gsan/rest/consultaLeitura?imovel={{ $json.imovel }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -240,
+        1392
+      ],
+      "id": "c4f528cf-4929-46a7-8899-cfd153b2969e",
+      "name": "Próxima Leitura"
+    },
+    {
+      "parameters": {
+        "url": "=http://logprosistemas.ddns.net:9078/gsan/rest/segundaViaConta?imovel={{ $json.imovel }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -384,
+        1568
+      ],
+      "id": "c7c05912-177c-47e5-b3a9-d69fb369a94d",
+      "name": "Segunda Via Simples"
+    },
+    {
+      "parameters": {
+        "url": "=http://logprosistemas.ddns.net:9078/gsan/rest/segundaViaContaTotal?imovel={{ $json.imovel }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -384,
+        1664
+      ],
+      "id": "24238516-a8d8-4c11-a577-da1e3feea364",
+      "name": "Segunda Via Total"
+    },
+    {
+      "parameters": {
+        "url": "=http://logprosistemas.ddns.net:9078/gsan/rest/segundaViaCodigoBarra?imovel={{ $json.imovel }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -384,
+        1776
+      ],
+      "id": "4a9439c3-9318-409f-985a-af9e58608ff3",
+      "name": "Código Barras"
+    },
+    {
+      "parameters": {
+        "url": "=http://logprosistemas.ddns.net:9078/gsan/rest/segundaViaContaRelatorio?matricula={{ $json.imovel }}&idConta=123456",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -384,
+        1872
+      ],
+      "id": "eb6fc121-f4be-4392-9a7d-62bb000cf1c6",
+      "name": "Relatório Conta PDF"
+    },
+    {
+      "parameters": {
+        "url": "=http://logprosistemas.ddns.net:9078/gsan/rest/verificarDebitosImovel?imovel={{ $json.imovel }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -384,
+        1968
+      ],
+      "id": "16542e95-5848-4256-991f-cc6d22c59760",
+      "name": "Débitos PDF"
+    },
+    {
+      "parameters": {
+        "url": "=http://logprosistemas.ddns.net:9078/gsan/rest/localidadeImovel?imovel={{ $json.imovel }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -384,
+        2064
+      ],
+      "id": "86426146-f0e1-416b-906b-8c30fc31093d",
+      "name": "Localidade"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extrair Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair Dados": {
+      "main": [
+        [
+          {
+            "node": "Buscar Sessao",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ignorar FromMe": {
+      "main": [
+        [],
+        []
+      ]
+    },
+    "Buscar Sessao": {
+      "main": [
+        [
+          {
+            "node": "Sessao Nova?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sessao Nova?": {
+      "main": [
+        [
+          {
+            "node": "Criar Sessao",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch Menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar Sessao": {
+      "main": [
+        [
+          {
+            "node": "Solicitar CPF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Imoveis": {
+      "main": [
+        [
+          {
+            "node": "Salvar Sessao",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Salvar Sessao": {
+      "main": [
+        [
+          {
+            "node": "Enviar Menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Menu": {
+      "main": [
+        [
+          {
+            "node": "Histórico Consumo",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Próximo Vencimento",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Próxima Leitura",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Segunda Via Simples",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Segunda Via Total",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Código Barras",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Relatório Conta PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Débitos PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Localidade",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Criar Sessao",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Buscar Imoveis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "timeSavedMode": "dynamic",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "674e84e7-abe7-42a2-bcba-1ecb2dfa6e53",
+  "meta": {
+    "instanceId": "b5ca014f7cfae3117a719177c7e611ad496413af049f7fd96b9d1eb2ad77a9db"
+  },
+  "id": "tPu-S4ttNzdo9CT9vnQsK",
+  "tags": []
+}

@@ -1,0 +1,15 @@
+[Unit]
+Description=Stack de Monitoramento (Prometheus, Grafana, Uptime Kuma, Node Exporter)
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/opt/monitoring
+ExecStart=/opt/monitoring/start-monitoring.sh
+ExecStop=/usr/bin/docker stop prometheus grafana uptime-kuma node-exporter
+TimeoutStartSec=120
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,27 @@
+# Cópia de referência da zona pm15nov.rs.gov.br com DKIM e DMARC
+# Arquivo real no servidor: /etc/bind/db.pm15nov.rs.gov.br
+# Serial foi incrementado para 2026031701
+
+$TTL 604800
+@    IN    SOA    mail.pm15nov.rs.gov.br. root.pm15nov.rs.gov.br. (
+    2026031701  ; Serial (incrementado)
+    604800      ; Refresh
+    86400       ; Retry
+    2419200     ; Expire
+    604800 )    ; Negative Cache TTL
+
+@    IN    NS    mail.pm15nov.rs.gov.br.
+@    IN    NS    portal.pm15nov.rs.gov.br.
+@    IN    NS    chat.pm15nov.rs.gov.br.
+@    IN    NS    esus.pm15nov.rs.gov.br.
+
+@    IN    A    177.22.81.69
+portal     A    177.22.81.66
+mail       A    177.22.81.69
+chat       A    177.22.81.67
+esus       A    177.22.86.130
+
+@    IN    MX   10 mail.pm15nov.rs.gov.br.
+@    IN    TXT  "v=spf1 mx -all"
+61EDF07A-3FFD-11ED-9B88-6A89A0686093._domainkey IN TXT "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsr" "9f8yJxcigLqNgsCTJ5XgxulzqHXXXwxGBW1zCU41guMtKLed/1Nyqscj5Sc0M2Qe" "ejuEAzvYiNGLTk2vGwjka1VlPsUNM8J10wPbJ7ttmOMrO8Xj8Rl0Fgb6p/g0so8O" "K8ltmzgW3xlFMchY06Gjli2cDmkaYM6QSt194mCCUcfbJTAT3BfxVSn2MCcCL7I8" "8igugryBOev17m/gQD8oGKAPFV4z/RDQBBCNb44kCTvE+BNkEgDNTIzI58oxzQFC" "o1eZcFjDiF+c3kkKmQbgMfc/1kOA8Lprc0E3O98iAkFY5OUDU/8Wo3dUUlu/3CZE" "3j703fPB0uMl9Om/RrPQIDAQAB"
+_dmarc    IN    TXT    "v=DMARC1; p=none; rua=mailto:postmaster@pm15nov.rs.gov.br; pct=100; adkim=s; aspf=s"

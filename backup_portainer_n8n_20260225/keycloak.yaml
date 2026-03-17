@@ -1,0 +1,81 @@
+version: "3.7"
+services:
+
+## --------------------------- KEYCLOAK --------------------------- ##
+
+  keycloak:
+
+    image: quay.io/keycloak/keycloak:latest
+    command: start
+    networks:
+      - synkiNet ## Nome da rede interna
+
+    environment:
+    ## 👤 Dados de acesso
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=Ifibiruba@10000
+
+    ## 🌐 Configurações Gerais
+      - TZ=America/Sao_Paulo
+
+    ## 🔗 Configurações de Rede e Proxy
+      ## box1.synkicrm.com.br deve ser apenas o hostname (ex: keycloak.exemplo.com)
+      ## O scheme (https) e porta serão resolvidos dinamicamente dos headers X-Forwarded-*
+      - KC_HOSTNAME=box1.synkicrm.com.br
+      - KC_HOSTNAME_STRICT=false
+      - KC_HOSTNAME_STRICT_HTTPS=false
+      - KC_HOSTNAME_STRICT_BACKCHANNEL=false
+      - KC_HTTP_ENABLED=true
+      ## KC_PROXY=edge está deprecated na v2, removido para evitar warnings
+      ## KC_PROXY_HEADERS é obrigatório quando usando proxy reverso
+      - KC_PROXY_HEADERS=xforwarded
+      - KC_HTTP_RELATIVE_PATH=/
+      
+    ## 🐘 Banco de Dados PostgreSQL (VARIÁVEIS)
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://postgres:5432/keycloak
+      - KC_DB_USERNAME=postgres
+      - KC_DB_PASSWORD=2b70bd1dfd3a72ff53d993318f8e2a06
+      
+    ## 🔄 Health & Metrics (fixos)
+      - KC_HEALTH_ENABLED=true
+      - KC_METRICS_ENABLED=true
+      
+    ## ⚙️ Performance (fixos)
+      - JAVA_OPTS_APPEND=-Dkeycloak.profile.feature.upload_scripts=enabled
+      
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2048M
+      labels:
+        - traefik.enable=true
+        
+        ## Router principal
+        - traefik.http.routers.keycloak.rule=Host(`box1.synkicrm.com.br`)
+        - traefik.http.routers.keycloak.entrypoints=websecure
+        - traefik.http.routers.keycloak.tls.certresolver=letsencryptresolver
+        - traefik.http.routers.keycloak.tls=true
+        - traefik.http.routers.keycloak.service=keycloak
+        - traefik.http.services.keycloak.loadbalancer.server.port=8080
+        - traefik.http.middlewares.keycloak-headers.headers.customrequestheaders.X-Forwarded-Proto=https
+        - traefik.http.middlewares.keycloak-headers.headers.customrequestheaders.X-Forwarded-For=
+        - traefik.http.middlewares.keycloak-headers.headers.customrequestheaders.X-Real-IP=
+        - traefik.http.middlewares.keycloak-headers.headers.customrequestheaders.X-Forwarded-Host=box1.synkicrm.com.br
+        - traefik.http.middlewares.keycloak-headers.headers.customrequestheaders.X-Forwarded-Port=443
+        - traefik.http.routers.keycloak.middlewares=keycloak-headers
+
+## --------------------------- NETWORKS --------------------------- ##
+
+networks:
+  synkiNet:
+    external: true
+    name: synkiNet
+
+

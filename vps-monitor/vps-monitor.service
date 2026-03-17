@@ -1,0 +1,16 @@
+[Unit]
+Description=Monitor VPS - Página de monitoramento de recursos
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/vps-monitor/monitor_server.py --port 80
+Restart=always
+RestartSec=3
+StartLimitIntervalSec=0
+User=root
+WorkingDirectory=/opt/vps-monitor
+
+[Install]
+WantedBy=multi-user.target

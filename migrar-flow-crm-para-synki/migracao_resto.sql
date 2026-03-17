@@ -1,0 +1,52 @@
+-- tribut_cofins
+INSERT IGNORE INTO `synki_pulse05036308000100`.`tribut_cofins` (`ID`, `ALIQUOTA_PORCENTO`, `ALIQUOTA_UNIDADE`, `CST_COFINS`, `EFD_TABELA_435`, `MODALIDADE_BASE_CALCULO`, `PORCENTO_BASE_CALCULO`, `VALOR_PAUTA_FISCAL`, `VALOR_PRECO_MAXIMO`, `ID_TRIBUT_CONFIGURA_OF_GT`) SELECT `ID`, `ALIQUOTA_PORCENTO`, `ALIQUOTA_UNIDADE`, `CST_COFINS`, `EFD_TABELA_435`, `MODALIDADE_BASE_CALCULO`, `PORCENTO_BASE_CALCULO`, `VALOR_PAUTA_FISCAL`, `VALOR_PRECO_MAXIMO`, `ID_TRIBUT_CONFIGURA_OF_GT` FROM `flow_crm`.`tribut_cofins`;
+
+-- tribut_configura_of_gt
+INSERT IGNORE INTO `synki_pulse05036308000100`.`tribut_configura_of_gt` (`ID`, `ID_TRIBUT_GRUPO_TRIBUTARIO`, `ID_TRIBUT_OPERACAO_FISCAL`) SELECT `ID`, `ID_TRIBUT_GRUPO_TRIBUTARIO`, `ID_TRIBUT_OPERACAO_FISCAL` FROM `flow_crm`.`tribut_configura_of_gt`;
+
+-- tribut_grupo_tributario
+INSERT IGNORE INTO `synki_pulse05036308000100`.`tribut_grupo_tributario` (`ID`, `DESCRICAO`, `OBSERVACAO`, `ORIGEM_MERCADORIA`, `ID_EMPRESA`) SELECT `ID`, `DESCRICAO`, `OBSERVACAO`, `ORIGEM_MERCADORIA`, `ID_EMPRESA` FROM `flow_crm`.`tribut_grupo_tributario`;
+
+-- tribut_icms_custom_cab
+INSERT IGNORE INTO `synki_pulse05036308000100`.`tribut_icms_custom_cab` (`ID`, `DESCRICAO`, `ORIGEM_MERCADORIA`, `ID_EMPRESA`) SELECT `ID`, `DESCRICAO`, `ORIGEM_MERCADORIA`, `ID_EMPRESA` FROM `flow_crm`.`tribut_icms_custom_cab`;
+
+-- tribut_icms_custom_det
+INSERT IGNORE INTO `synki_pulse05036308000100`.`tribut_icms_custom_det` (`ID`, `ALIQUOTA`, `ALIQUOTA_ICMS_ST`, `ALIQUOTA_INTERESTADUAL_ST`, `ALIQUOTA_INTERNA_ST`, `CFOP`, `CSOSN_B`, `CST_B`, `MODALIDADE_BC`, `MODALIDADE_BC_ST`, `MVA`, `PORCENTO_BC`, `PORCENTO_BC_ST`, `UF_DESTINO`, `VALOR_PAUTA`, `VALOR_PAUTA_ST`, `VALOR_PRECO_MAXIMO`, `VALOR_PRECO_MAXIMO_ST`, `ID_TRIBUT_ICMS_CUSTOM_CAB`) SELECT `ID`, `ALIQUOTA`, `ALIQUOTA_ICMS_ST`, `ALIQUOTA_INTERESTADUAL_ST`, `ALIQUOTA_INTERNA_ST`, `CFOP`, `CSOSN_B`, `CST_B`, `MODALIDADE_BC`, `MODALIDADE_BC_ST`, `MVA`, `PORCENTO_BC`, `PORCENTO_BC_ST`, `UF_DESTINO`, `VALOR_PAUTA`, `VALOR_PAUTA_ST`, `VALOR_PRECO_MAXIMO`, `VALOR_PRECO_MAXIMO_ST`, `ID_TRIBUT_ICMS_CUSTOM_CAB` FROM `flow_crm`.`tribut_icms_custom_det`;
+
+-- tribut_icms_uf
+INSERT IGNORE INTO `synki_pulse05036308000100`.`tribut_icms_uf` (`id`, `ALIQUOTA`, `ALIQUOTA_ICMS_ST`, `ALIQUOTA_INTERESTADUAL_ST`, `ALIQUOTA_INTERNA_ST`, `CFOP`, `C_BENEFICIO`, `CSOSN`, `CST`, `MODALIDADE_BC`, `MODALIDADE_BC_ST`, `MVA`, `ORIGEM_MERCADORIA`, `PORCENTO_BC`, `PORCENTO_BC_ST`, `UF_DESTINO`, `VALOR_PAUTA`, `VALOR_PAUTA_ST`, `VALOR_PRECO_MAXIMO`, `VALOR_PRECO_MAXIMO_ST`, `ID_TRIBUT_CONFIGURA_OF_GT`) SELECT `id`, `ALIQUOTA`, `ALIQUOTA_ICMS_ST`, `ALIQUOTA_INTERESTADUAL_ST`, `ALIQUOTA_INTERNA_ST`, `CFOP`, `C_BENEFICIO`, `CSOSN`, `CST`, `MODALIDADE_BC`, `MODALIDADE_BC_ST`, `MVA`, `ORIGEM_MERCADORIA`, `PORCENTO_BC`, `PORCENTO_BC_ST`, `UF_DESTINO`, `VALOR_PAUTA`, `VALOR_PAUTA_ST`, `VALOR_PRECO_MAXIMO`, `VALOR_PRECO_MAXIMO_ST`, `ID_TRIBUT_CONFIGURA_OF_GT` FROM `flow_crm`.`tribut_icms_uf`;
+
+-- tribut_ipi
+INSERT IGNORE INTO `synki_pulse05036308000100`.`tribut_ipi` (`ID`, `ALIQUOTA_PORCENTO`, `ALIQUOTA_UNIDADE`, `CST_IPI`, `MODALIDADE_BASE_CALCULO`, `PORCENTO_BASE_CALCULO`, `VALOR_PAUTA_FISCAL`, `VALOR_PRECO_MAXIMO`, `ID_TIPO_RECEITA_DIPI`, `ID_TRIBUT_CONFIGURA_OF_GT`) SELECT `ID`, `ALIQUOTA_PORCENTO`, `ALIQUOTA_UNIDADE`, `CST_IPI`, `MODALIDADE_BASE_CALCULO`, `PORCENTO_BASE_CALCULO`, `VALOR_PAUTA_FISCAL`, `VALOR_PRECO_MAXIMO`, `ID_TIPO_RECEITA_DIPI`, `ID_TRIBUT_CONFIGURA_OF_GT` FROM `flow_crm`.`tribut_ipi`;
+
+-- tribut_iss
+INSERT IGNORE INTO `synki_pulse05036308000100`.`tribut_iss` (`ID`, `ALIQUOTA_PORCENTO`, `ALIQUOTA_UNIDADE`, `CODIGO_TRIBUTACAO`, `ITEM_LISTA_SERVICO`, `MODALIDADE_BASE_CALCULO`, `PORCENTO_BASE_CALCULO`, `VALOR_PAUTA_FISCAL`, `VALOR_PRECO_MAXIMO`, `ID_TRIBUT_OPERACAO_FISCAL`) SELECT `ID`, `ALIQUOTA_PORCENTO`, `ALIQUOTA_UNIDADE`, `CODIGO_TRIBUTACAO`, `ITEM_LISTA_SERVICO`, `MODALIDADE_BASE_CALCULO`, `PORCENTO_BASE_CALCULO`, `VALOR_PAUTA_FISCAL`, `VALOR_PRECO_MAXIMO`, `ID_TRIBUT_OPERACAO_FISCAL` FROM `flow_crm`.`tribut_iss`;
+
+-- tribut_operacao_fiscal
+INSERT IGNORE INTO `synki_pulse05036308000100`.`tribut_operacao_fiscal` (`ID`, `CFOP`, `DESCRICAO`, `DESCRICAO_NA_NF`, `FINALIDADE`, `FINALIDADE_OPERACAO`, `GERA_FINANCEIRO`, `MOVIMENTA_ESTOQUE`, `OBSERVACAO`, `PRINCIPAL`, `TIPO_OPERACAO`, `ID_EMPRESA`) SELECT `ID`, `CFOP`, `DESCRICAO`, `DESCRICAO_NA_NF`, `FINALIDADE`, `FINALIDADE_OPERACAO`, `GERA_FINANCEIRO`, `MOVIMENTA_ESTOQUE`, `OBSERVACAO`, `PRINCIPAL`, `TIPO_OPERACAO`, `ID_EMPRESA` FROM `flow_crm`.`tribut_operacao_fiscal`;
+
+-- tribut_pis
+INSERT IGNORE INTO `synki_pulse05036308000100`.`tribut_pis` (`ID`, `ALIQUOTA_PORCENTO`, `ALIQUOTA_UNIDADE`, `CST_PIS`, `EFD_TABELA_435`, `MODALIDADE_BASE_CALCULO`, `PORCENTO_BASE_CALCULO`, `VALOR_PAUTA_FISCAL`, `VALOR_PRECO_MAXIMO`, `ID_TRIBUT_CONFIGURA_OF_GT`) SELECT `ID`, `ALIQUOTA_PORCENTO`, `ALIQUOTA_UNIDADE`, `CST_PIS`, `EFD_TABELA_435`, `MODALIDADE_BASE_CALCULO`, `PORCENTO_BASE_CALCULO`, `VALOR_PAUTA_FISCAL`, `VALOR_PRECO_MAXIMO`, `ID_TRIBUT_CONFIGURA_OF_GT` FROM `flow_crm`.`tribut_pis`;
+
+-- uf
+INSERT IGNORE INTO `synki_pulse05036308000100`.`uf` (`ID`, `CODIGO_IBGE`, `NOME`, `SIGLA`) SELECT `ID`, `CODIGO_IBGE`, `NOME`, `SIGLA` FROM `flow_crm`.`uf`;
+
+-- usuario
+INSERT IGNORE INTO `synki_pulse05036308000100`.`usuario` (`id`, `cidade`, `cpf_cnpj`, `email`, `nome`, `perfil`, `senha`, `senhaConfirma`, `ID_EMPRESA`, `ID_AGENDA`, `agenda`, `celular`, `celularTratado`, `celularTratadoApi`, `NOME_COLABORADOR`, `nomeColaborador`, `urlInstancia`, `url_instancia`, `TOKEN_INSTANCIA`, `tokenIstancia`, `uiidFirebase`, `celular_tratado`, `celular_tratado_api`, `senha_confirma`, `token_istancia`, `uiid_firebase`, `SENHA_EMAIL`, `SERVIDOR_SMTP`, `PORTA_SMTP`, `TEM_SSL`, `TEM_TLS`, `ID_PERMISSAO`, `ID_COMISSAO`) SELECT `id`, `cidade`, `cpf_cnpj`, `email`, `nome`, `perfil`, `senha`, `senhaConfirma`, `ID_EMPRESA`, `ID_AGENDA`, `agenda`, `celular`, `celularTratado`, `celularTratadoApi`, `NOME_COLABORADOR`, `nomeColaborador`, `urlInstancia`, `url_instancia`, `TOKEN_INSTANCIA`, `tokenIstancia`, `uiidFirebase`, `celular_tratado`, `celular_tratado_api`, `senha_confirma`, `token_istancia`, `uiid_firebase`, `SENHA_EMAIL`, `SERVIDOR_SMTP`, `PORTA_SMTP`, `TEM_SSL`, `TEM_TLS`, `ID_PERMISSAO`, `ID_COMISSAO` FROM `flow_crm`.`usuario`;
+
+-- usuario_grupo
+INSERT IGNORE INTO `synki_pulse05036308000100`.`usuario_grupo` (`usuario_id`, `grupo_id`) SELECT `usuario_id`, `grupo_id` FROM `flow_crm`.`usuario_grupo`;
+
+-- veiculo
+INSERT IGNORE INTO `synki_pulse05036308000100`.`veiculo` (`ID`, `ANO_FABRICA`, `CAPACIDADE_M3`, `CAPACIDADE_KG`, `COR`, `MARCA`, `MODELO`, `OBS`, `PLACA`, `RENAVAM`, `TARA`, `TIPO_CARROCERIA`, `TIPO_PROPRIETARIO`, `TIPO_RODADO`, `TIPO_VEICULO`, `UF_LICENCIAMENTO`, `ID_EMPRESA`) SELECT `ID`, `ANO_FABRICA`, `CAPACIDADE_M3`, `CAPACIDADE_KG`, `COR`, `MARCA`, `MODELO`, `OBS`, `PLACA`, `RENAVAM`, `TARA`, `TIPO_CARROCERIA`, `TIPO_PROPRIETARIO`, `TIPO_RODADO`, `TIPO_VEICULO`, `UF_LICENCIAMENTO`, `ID_EMPRESA` FROM `flow_crm`.`veiculo`;
+
+-- vendedor
+INSERT IGNORE INTO `synki_pulse05036308000100`.`vendedor` (`id`, `COMISSAO`, `META_VENDA`) SELECT `id`, `COMISSAO`, `META_VENDA` FROM `flow_crm`.`vendedor`;
+
+-- visita_sugerida
+INSERT IGNORE INTO `synki_pulse05036308000100`.`visita_sugerida` (`id`, `data_sugerida`, `insight`, `latitude_cliente`, `longitude_cliente`, `prioridade`, `status`, `id_agenda_compromisso`, `titulo`, `distancia`, `nome`, `data_rota`, `ID_USUARIO`, `identificador`) SELECT `id`, `data_sugerida`, `insight`, `latitude_cliente`, `longitude_cliente`, `prioridade`, `status`, `id_agenda_compromisso`, `titulo`, `distancia`, `nome`, `data_rota`, `ID_USUARIO`, `identificador` FROM `flow_crm`.`visita_sugerida`;
+
+-- visitas_sugeridas
+INSERT IGNORE INTO `synki_pulse05036308000100`.`visitas_sugeridas` (`ID`, `DATA_CRIACAO`, `LATITUDE`, `LONGITUDE`, `OBS`, `ID_OPORTUNIDADE`) SELECT `ID`, `DATA_CRIACAO`, `LATITUDE`, `LONGITUDE`, `OBS`, `ID_OPORTUNIDADE` FROM `flow_crm`.`visitas_sugeridas`;
+
+SET FOREIGN_KEY_CHECKS=1;

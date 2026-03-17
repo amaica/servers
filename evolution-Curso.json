@@ -1,0 +1,369 @@
+{
+  "name": "evolution-Curso",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "928c3265-7ac4-47b1-b990-86d082a16a4a",
+              "name": "evento",
+              "value": "={{ $json.body.event }}",
+              "type": "string"
+            },
+            {
+              "id": "ee622bb0-c4d0-4bc5-a802-aa3482545840",
+              "name": "instance",
+              "value": "={{ $json.body.instance }}",
+              "type": "string"
+            },
+            {
+              "id": "17f8663e-8307-4388-9631-120783c69508",
+              "name": "remotejid",
+              "value": "={{ $json.body.data.key.remoteJid }}",
+              "type": "string"
+            },
+            {
+              "id": "eaa85f5a-0174-48bd-a2ab-fa31c9ad9705",
+              "name": "fromme",
+              "value": "={{ $json.body.data.key.fromMe }}",
+              "type": "boolean"
+            },
+            {
+              "id": "b608998b-6ea1-4ffc-bdc2-224c5e77b13f",
+              "name": "pushname",
+              "value": "={{ $json.body.data.pushName }}",
+              "type": "string"
+            },
+            {
+              "id": "42196142-7342-43f0-bf74-3b46e272b730",
+              "name": "messagetype",
+              "value": "={{ $json.body.data.messageType }}",
+              "type": "string"
+            },
+            {
+              "id": "c8018fc3-0240-4676-a24c-cbbcb4ace2a0",
+              "name": "messagetimestamp",
+              "value": "={{ $json.body.data.messageTimestamp }}",
+              "type": "number"
+            },
+            {
+              "id": "412b89e2-6b1c-423c-807d-ff8a1d94509f",
+              "name": "connected_phone",
+              "value": "={{ $json.body.sender }}",
+              "type": "string"
+            },
+            {
+              "id": "503d6085-a686-4a1f-b79d-4c5f15dfde9b",
+              "name": "server_url",
+              "value": "={{ $json.body.server_url }}",
+              "type": "string"
+            },
+            {
+              "id": "51cbd1fc-d3b6-4546-b738-7c65c86b172a",
+              "name": "apikey",
+              "value": "={{ $json.body.apikey }}",
+              "type": "string"
+            },
+            {
+              "id": "829fac91-6919-47c3-a1ab-ee4f702b1828",
+              "name": "conversation",
+              "value": "={{ $json.body.data.message.conversation }}",
+              "type": "string"
+            },
+            {
+              "id": "065a5b40-8829-428f-9932-48cfb52f2c7f",
+              "name": "messageid",
+              "value": "={{ $json.body.data.key.id }}",
+              "type": "string"
+            },
+            {
+              "id": "5f6babdc-71b7-45e7-ad36-97816df19121",
+              "name": "height",
+              "value": "={{ $json.body.data.message.imageMessage.height }} {{ $json.body.data.message.videoMessage.height }}",
+              "type": "number"
+            },
+            {
+              "id": "429a0692-c061-4a4f-ad22-22b5d8327efe",
+              "name": "width",
+              "value": "={{ $json.body.data.message.imageMessage.width }} {{ $json.body.data.message.videoMessage.width }}",
+              "type": "number"
+            },
+            {
+              "id": "7e3e8dd8-c5c5-43c5-a9ff-b3064fc06f05",
+              "name": "thumb",
+              "value": "={{ $json.body.data.message.imageMessage.jpegThumbnail }}{{ $json.body.data.message.videoMessage.jpegThumbnail }} {{ $json.body.data.message.documentMessage.jpegThumbnail }} {{ $json.body.data.message.locationMessage.jpegThumbnail }}",
+              "type": "string"
+            },
+            {
+              "id": "3924dbcf-d91d-4cea-b7ae-d955044571ff",
+              "name": "mediaurl",
+              "value": "={{ $json.body.data.message.mediaUrl }}",
+              "type": "string"
+            },
+            {
+              "id": "b3a956be-5482-44e4-9fad-3fd476c0b551",
+              "name": "caption",
+              "value": "={{ $json.body.data.message.imageMessage.caption }} {{ $json.body.data.message.videoMessage.caption }} {{ $json.body.data.message.documentMessage.caption }}",
+              "type": "string"
+            },
+            {
+              "id": "b6e0ee04-de9f-4332-aad3-dcc0a3b24b7b",
+              "name": "title",
+              "value": "={{ $json.body.data.message.documentMessage.title }}",
+              "type": "string"
+            },
+            {
+              "id": "a4f91a89-4108-42e9-adc4-4ce741721490",
+              "name": "latitude",
+              "value": "={{ $json.body.data.message.locationMessage.degreesLatitude }}",
+              "type": "number"
+            },
+            {
+              "id": "cc73cf41-6a44-41de-ad4e-05c865538795",
+              "name": "longitude",
+              "value": "={{ $json.body.data.message.locationMessage.degreesLongitude }}",
+              "type": "number"
+            },
+            {
+              "id": "f81da94d-fcd4-4f85-8c8c-8663cce932be",
+              "name": "isgroup",
+              "value": "={{ $json.body.data.key.remoteJid.endsWith('g.us') }}",
+              "type": "boolean"
+            },
+            {
+              "id": "ad9b5d71-dedc-43ce-93d8-abe398eb7736",
+              "name": "participant",
+              "value": "={{ $json.body.data.key.participant }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "85aef13f-7fe0-4ffc-9a4f-e81aed2e54c4",
+      "name": "Informacoes iniciais",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -464,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "a066f2d7-8493-43bf-8467-939df57e3af1",
+              "leftValue": "={{ $json.messagetype }}",
+              "rightValue": "unknown",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "16120f8f-bcb8-406f-805a-8318bf7e3d2b",
+              "leftValue": "={{ $json.messagetype }}",
+              "rightValue": "editedMessage",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "0a3f95c3-340e-4875-837f-3a57392f52ca",
+              "leftValue": "={{ $json.messagetype }}",
+              "rightValue": "reactionMessage",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "27598979-4abe-403e-8aa0-65c66d5cda9d",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -256,
+        144
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a98c97d9-7d2d-4c5e-a56b-41a2893b33e8",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "tableId": "=evo_messages",
+        "dataToSend": "autoMapInputData"
+      },
+      "id": "2cdbddb4-adab-4f6d-a582-7605e2d79559",
+      "name": "Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        176
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "u59AIsPlHftwmg4H",
+          "name": "Supabase (Final)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "evolution2",
+        "authentication": "basicAuth",
+        "options": {}
+      },
+      "id": "9f52f1d0-fe48-4dc6-bed7-65c47699be53",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -720,
+        144
+      ],
+      "webhookId": "5edcd230-5af4-45ff-bbbd-21790aab8443",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "f1n9zWkCQkKaY2XL",
+          "name": "Unnamed credential"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "primary-production-84ba.up.railway.app",
+            "user-agent": "axios/1.7.7",
+            "content-length": "767",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "content-type": "application/json",
+            "x-forwarded-for": "147.79.107.18",
+            "x-forwarded-host": "primary-production-84ba.up.railway.app",
+            "x-forwarded-proto": "https",
+            "x-railway-request-id": "qBxa_gaoQw2Y6on3QFifBg_2074704348",
+            "x-real-ip": "147.79.107.18",
+            "x-request-start": "1733414756151"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "event": "messages.upsert",
+            "instance": "israel3",
+            "data": {
+              "key": {
+                "remoteJid": "120363162594984886@g.us",
+                "fromMe": false,
+                "id": "3AF1E09A4F38D73B4786",
+                "participant": "554191480924@s.whatsapp.net"
+              },
+              "pushName": "Israel Henrique",
+              "status": "DELIVERY_ACK",
+              "message": {
+                "conversation": "Teste",
+                "messageContextInfo": {
+                  "messageSecret": "DBy/lk8EjCPI9+xgS3NIL7Iclhhw/kQN5xSi3hWqx/E="
+                }
+              },
+              "messageType": "conversation",
+              "messageTimestamp": 1733414755,
+              "instanceId": "99702f35-ca00-4a53-a08f-b5b5786c744f",
+              "source": "ios"
+            },
+            "destination": "https://primary-production-84ba.up.railway.app/webhook-test/evolution",
+            "date_time": "2024-12-05T13:05:55.701Z",
+            "sender": "554191338055@s.whatsapp.net",
+            "server_url": "https://evolution-evolution.hf8n6w.easypanel.host",
+            "apikey": "8F1863A0-8485-4128-A537-020672982EBD"
+          },
+          "webhookUrl": "https://primary-production-84ba.up.railway.app/webhook-test/evolution",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Informacoes iniciais": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Informacoes iniciais",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "ca1332d8-03c8-4f7f-b3e7-d4a2252f5286",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b5ca014f7cfae3117a719177c7e611ad496413af049f7fd96b9d1eb2ad77a9db"
+  },
+  "id": "qZqI_CwHSk4VtBp_d0Ebo",
+  "tags": []
+}

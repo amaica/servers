@@ -1,0 +1,150 @@
+version: "3.7"
+services:
+
+## --------------------------- ORION --------------------------- ##
+
+  evoai_api:
+    image: evoapicloud/evo-ai:latest ## Versão da imagem
+
+    volumes:
+      - evoai_logs:/app/logs
+      - evoai_static:/app/static
+    
+    networks:
+      - synkiNet ## Nome da rede interna
+
+    environment:
+    ## 🔗 Informações da API
+      - API_URL=https://evoiaapi.synkicrm.com.br
+
+    ## 🔗 Informações do Front
+      - APP_URL=https://evoia.synkicrm.com.br
+      
+    ## 🧪 Dados do Admin
+      - ADMIN_EMAIL=synki.sistemas@gmail.com
+      - ADMIN_INITIAL_PASSWORD=Ifibiruba@10000
+
+    ## 📧 Configuração de SMTP
+      - EMAIL_PROVIDER=smtp
+      - SMTP_FROM=synki.sistemas@gmail.com
+      - SMTP_USER=synki.sistemas@gmail.com
+      - SMTP_PASSWORD=ezipnyqzeihirdad
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=465
+      - SMTP_USE_TLS=false
+      - SMTP_USE_SSL=true
+
+    ## 🛢️ Configuração do Postgres
+      - POSTGRES_CONNECTION_STRING=postgresql://postgres:2b70bd1dfd3a72ff53d993318f8e2a06@postgres:5432/evoai
+
+    ## ⚡ Configuração do Redis
+      - REDIS_HOST=evoai_redis
+      - REDIS_PORT=6379
+      - REDIS_DB=9
+      - REDIS_KEY_PREFIX=a2a
+      - REDIS_SSL=false
+      - REDIS_TTL=3600
+      - TOOLS_CACHE_TTL=3600
+
+    ## 🔐 Encriptação e JWT
+      - ENCRYPTION_KEY=DD4LpvFz9g1Kmn7JdlN_EYEgSEI06jQ_0EUP9I-NbPA=
+      - JWT_SECRET_KEY=QQ6ZVx22tsf+6kTiGi/xBFhCs6Ffw0k1uUP6HEpQjqA=
+      - JWT_ALGORITHM=HS256
+      - JWT_EXPIRATION_TIME=3600
+
+    ## 🧾 Logs
+      - LOG_LEVEL=INFO
+      - LOG_DIR=logs
+    
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+        - node.role == manager
+      labels:
+        - traefik.enable=1
+        - traefik.http.routers.evoai_api.rule=Host(`evoiaapi.synkicrm.com.br`) ## Url da Evolution API
+        - traefik.http.routers.evoai_api.entrypoints=websecure
+        - traefik.http.routers.evoai_api.priority=1
+        - traefik.http.routers.evoai_api.tls.certresolver=letsencryptresolver
+        - traefik.http.routers.evoai_api.service=evoai_api
+        - traefik.http.services.evoai_api.loadbalancer.server.port=8000
+        - traefik.http.services.evoai_api.loadbalancer.passHostHeader=true
+
+## --------------------------- ORION --------------------------- ##
+
+  evoai_frontend:
+    image: evoapicloud/evo-ai-frontend:latest ## Versão da imagem
+    
+    networks:
+      - synkiNet ## Nome da rede interna
+
+    environment:
+      - NEXT_PUBLIC_API_URL=https://evoiaapi.synkicrm.com.br
+    
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+        - node.role == manager
+      labels:
+        - traefik.enable=1
+        - traefik.http.routers.evoai_frontend.rule=Host(`evoia.synkicrm.com.br`) ## Url da Evolution API
+        - traefik.http.routers.evoai_frontend.entrypoints=websecure
+        - traefik.http.routers.evoai_frontend.priority=1
+        - traefik.http.routers.evoai_frontend.tls.certresolver=letsencryptresolver
+        - traefik.http.routers.evoai_frontend.service=evoai_frontend
+        - traefik.http.services.evoai_frontend.loadbalancer.server.port=3000
+        - traefik.http.services.evoai_frontend.loadbalancer.passHostHeader=true
+
+## --------------------------- ORION --------------------------- ##
+
+  evoai_redis:
+    image: redis:latest  ## Versão do Redis
+    command: [
+        "redis-server",
+        "--appendonly",
+        "yes",
+        "--port",
+        "6379"
+      ]
+
+    volumes:
+      - evoai_redis:/data
+
+    networks:
+      - synkiNet ## Nome da rede interna
+
+    ## Descomente as linhas abaixo para uso externo
+    #ports:
+    #  - 6379:6379
+
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+
+## --------------------------- ORION --------------------------- ##
+
+volumes:
+  evoai_logs:
+    external: true
+    name: evoai_logs
+  evoai_static:
+    external: true
+    name: evoai_static
+  evoai_redis:
+    external: true
+    name: evoai_redis
+
+networks:
+  synkiNet: ## Nome da rede interna
+    external: true
+    name: synkiNet ## Nome da rede interna
+

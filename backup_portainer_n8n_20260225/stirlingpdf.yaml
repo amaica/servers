@@ -1,0 +1,138 @@
+version: "3.7"
+
+services:
+
+## --------------------------- ORION --------------------------- ##
+
+  stirlingpdf_backend:
+    image: stirlingtools/stirling-pdf:latest ## Versão da aplicação
+    
+    volumes:
+      - stirlingpdf_backend_data:/usr/share/tessdata
+      - stirlingpdf_backend_config:/configs
+      - stirlingpdf_backend_logs:/logs
+    
+    networks:
+      - synkiNet ## Nome da rede interna
+    
+    environment:
+    ## 🛡️ Segurança e Autenticação
+      - SECURITY_ENABLELOGIN=true
+      - DOCKER_ENABLE_SECURITY=false
+      - DISABLE_ADDITIONAL_FEATURES=false
+      
+    ## 🎨 Branding e Interface
+      - UI_APPNAME=SynkiPdf
+      - UI_APPNAMENAVBAR=SynkiPdf
+      - UI_HOMEDESCRIPTION=PDF Tool
+      # - UI_LOGOSTYLE=classic
+      # - UI_LANGUAGES=
+      
+    ## ⚙️ Configurações do Sistema
+      - SYSTEM_DEFAULTLOCALE=pt_BR
+      - SYSTEM_MAXFILESIZE=100
+      - SYSTEM_GOOGLEVISIBILITY=false
+      - METRICS_ENABLED=true
+      
+    ## 🌐 Idiomas e OCR
+      - LANGS=en_GB,en_US,ar_AR,de_DE,fr_FR,es_ES,zh_CN,zh_TW,ca_CA,it_IT,sv_SE,pl_PL,ro_RO,ko_KR,pt_BR,ru_RU,el_GR,hi_IN,hu_HU,tr_TR,id_ID
+      # - TESSERACT_LANGS=eng,por,spa,fra,deu
+      
+    ## 🐳 Docker e Permissões
+      - PUID=1000
+      - PGID=1000
+      - UMASK=022
+      
+    ## 📧 Dados do SMTP (opicional)
+      - MAIL_ENABLED=false
+      - MAIL_ENABLEINVITES=false
+      - MAIL_HOST=smtp.example.com
+      - MAIL_PORT=587
+      - MAIL_USERNAME=
+      - MAIL_PASSWORD=
+      - MAIL_FROM=
+      
+    ## ⭐ Premium/Enterprise
+      # - PREMIUM_KEY=
+      # - PREMIUM_ENABLED=false
+      # - PREMIUM_PROFEATURES_SSOAUTOLOGIN=false
+      # - PREMIUM_ENTERPRISEFEATURES_AUDIT_ENABLED=true
+      # - PREMIUM_ENTERPRISEFEATURES_AUDIT_LEVEL=2
+      # - PREMIUM_ENTERPRISEFEATURES_AUDIT_RETENTIONDAYS=90
+    
+    ## 🔄 Modo
+      - MODE=BACKEND
+    
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+
+## --------------------------- ORION --------------------------- ##
+
+  stirlingpdf_frontend:
+    image: stirlingtools/stirling-pdf:latest ## Versão do frontend
+    
+    volumes:
+      - stirlingpdf_frontend_data:/usr/share/nginx/html
+    
+    networks:
+      - synkiNet ## Nome da rede interna
+    
+    environment:
+    ## 🔗 Backend e API
+      - BACKEND_URL=http://stirlingpdf_backend:8080
+    
+    ## ☁️ Integrações Google Drive
+      # - VITE_GOOGLE_DRIVE_CLIENT_ID=
+      # - VITE_GOOGLE_DRIVE_API_KEY=
+      # - VITE_GOOGLE_DRIVE_APP_ID=
+    
+    ## 🔄 Modo
+      - MODE=FRONTEND
+    
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.stirlingpdf_frontend.rule=Host(`tool.synkicrm.com.br`) ## Url da aplicação
+        - traefik.http.services.stirlingpdf_frontend.loadbalancer.server.port=8080
+        - traefik.http.routers.stirlingpdf_frontend.service=stirlingpdf_frontend
+        - traefik.http.routers.stirlingpdf_frontend.tls.certresolver=letsencryptresolver
+        - traefik.http.routers.stirlingpdf_frontend.entrypoints=websecure
+        - traefik.http.routers.stirlingpdf_frontend.tls=true
+
+## --------------------------- ORION --------------------------- ##
+
+volumes:
+  stirlingpdf_backend_data:
+    external: true
+    name: stirlingpdf_backend_data
+  stirlingpdf_backend_config:
+    external: true
+    name: stirlingpdf_backend_config
+  stirlingpdf_backend_logs:
+    external: true
+    name: stirlingpdf_backend_logs
+  stirlingpdf_frontend_data:
+    external: true
+    name: stirlingpdf_frontend_data
+
+networks:
+  synkiNet: ## Nome da rede interna
+    external: true
+    name: synkiNet ## Nome da rede interna

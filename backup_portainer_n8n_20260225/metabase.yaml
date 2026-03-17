@@ -1,0 +1,57 @@
+version: "3.7"
+services:
+
+## --------------------------- ORION --------------------------- ##
+
+  metabase:
+    image: metabase/metabase:latest
+
+    volumes:
+      - metabase_data:/metabase3-data
+
+    networks:
+      - synkiNet
+
+    environment:
+    ## 🔗 Url MetaBase
+      - MB_SITE_URL=https://reports.synkicrm.com.br
+      - MB_REDIRECT_ALL_REQUESTS_TO_HTTPS=true
+      - MB_JETTY_PORT=3000
+      - MB_JETTY_HOST=0.0.0.0
+
+    ## 🗄️ Dados postgres
+      - MB_DB_TYPE=postgres
+      - MB_DB_HOST=postgres
+      - MB_DB_PORT=5432
+      - MB_DB_DBNAME=metabase
+      - MB_DB_USER=postgres
+      - MB_DB_PASS=2b70bd1dfd3a72ff53d993318f8e2a06
+      - MB_DB_MIGRATION_LOCATION=none
+      - MB_AUTOMIGRATE=false
+
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.metabase.rule=Host(`reports.synkicrm.com.br`)
+        - traefik.http.services.metabase.loadbalancer.server.port=3000
+        - traefik.http.routers.metabase.service=metabase
+        - traefik.http.routers.metabase.entrypoints=websecure
+        - traefik.http.routers.metabase.tls=true
+        - traefik.http.routers.metabase.tls.certresolver=letsencryptresolver
+
+## --------------------------- ORION --------------------------- ##
+
+volumes:
+  metabase_data:
+    external: true
+    name: metabase_data
+
+networks:
+  synkiNet:
+    external: true
+    name: synkiNet
