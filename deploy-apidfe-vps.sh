@@ -11,7 +11,7 @@ JAVA17=/usr/lib/jvm/java-17-openjdk-amd64
 cd "$PROJECT_DIR"
 JAVA_HOME="$JAVA17" mvn -q clean package -DskipTests
 
-sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no "$VPS" "mkdir -p /opt/apidfe"
+sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no "$VPS" "mkdir -p /opt/apidfe/logs"
 sshpass -p "$PASS" scp -o StrictHostKeyChecking=no target/api-dfe-11.jar "$VPS:/opt/apidfe/"
 
 sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no "$VPS" "
@@ -21,6 +21,9 @@ sshpass -p "$PASS" ssh -o StrictHostKeyChecking=no "$VPS" "
 spring.security.user.name=\${DFE_API_USER:-dfeapi}
 spring.security.user.password=\${DFE_API_PASSWORD:-dfeapi}
 spring.flyway.validate-on-migrate=false
+logging.file.name=/opt/apidfe/logs/apidfe.log
+logging.logback.rollingpolicy.max-file-size=50MB
+logging.logback.rollingpolicy.max-history=14
 APIDFE_EOF
   systemctl restart apidfe
   sleep 15
